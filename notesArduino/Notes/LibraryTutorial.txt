@@ -1,0 +1,90 @@
+https://www.arduino.cc/en/Hacking/libraryTutorial
+
+HEADER FILE
+-----------
+The core of the header file consists of a line for each function in the library, wrapped up in a class along with any variables you need.
+The constructor has the same name as the class, and no return type.
+
+#include "Arduino.h" 	//standard types and constants of the Arduino language (this is automatically added
+						// to normal sketches, but not to libraries)
+
+/*
+  Morse.h - Library for flashing Morse code.
+  Created by David A. Mellis, November 2, 2007.
+  Released into the public domain.
+*/
+#ifndef Morse_h
+#define Morse_h
+
+#include "Arduino.h"	//standard types and constants of the Arduino language (this is automatically added
+						// to normal sketches, but not to libraries)
+class Morse
+{
+  public:
+    Morse(int pin);
+    void dot();
+    void dash();
+  private:
+    int _pin;
+};
+
+#endif
+
+SOURCE FILE
+-----------
+#include "Arduino.h"
+#include "Morse.h"
+
+Morse::Morse(int pin)
+{
+  pinMode(pin, OUTPUT);
+  _pin = pin;	// Adding an underscore to the start of the name is a common convention to 
+				//make it clear which variables are private
+}
+void Morse::dot()
+{
+  digitalWrite(_pin, HIGH);
+  delay(250);
+  digitalWrite(_pin, LOW);
+  delay(250);  
+}
+
+void Morse::dash()
+{
+  digitalWrite(_pin, HIGH);
+  delay(1000);
+  digitalWrite(_pin, LOW);
+  delay(250);
+}
+
+USING THE LIBRARY
+-----------------
+1) Make a Morse directory inside of the libraries sub-directory of your sketchbook directory. 
+2) Copy or move the Morse.h and Morse.cpp files into that directory. 
+3) Now launch the Arduino environment. If you open the Sketch > Import Library menu, you should see Morse inside. The library will be compiled with sketches that use it. If the library doesn't seem to build, make sure that the files really end in .cpp and .h (with no extra .pde or .txt extension, for example).
+
+#include <Morse.h>
+
+Morse morse(13);
+
+void setup()
+{
+}
+
+void loop()
+{
+  morse.dot(); morse.dot(); morse.dot();
+  morse.dash(); morse.dash(); morse.dash();
+  morse.dot(); morse.dot(); morse.dot();
+  delay(3000);
+}
+
+If you tried the new sketch, you probably noticed that nothing from our library was recognized by the environment and highlighted in color. Unfortunately, the Arduino software can't automatically figure out what you've define in your library (though it would be a nice feature to have), so you have to give it a little help. To do this, create a file called keywords.txt in the Morse directory. It should look like this:
+
+Morse   KEYWORD1
+dash    KEYWORD2
+dot     KEYWORD2
+[Get Code]
+Each line has the name of the keyword, followed by a tab (not spaces), followed by the kind of keyword. Classes should be KEYWORD1 and are colored orange; functions should be KEYWORD2 and will be brown. You'll have to restart the Arduino environment to get it to recognize the new keywords.
+
+It's also nice to provide people with an example sketch that uses your library. To do this, create an examples directory inside the Morse directory. Then, move or copy the directory containing the sketch (let's call it SOS) we wrote above into the examples directory. (You can find the sketch using the Sketch > Show Sketch Folder command.) If you restart the Arduino environment (this is the last time, I promise) - you'll see a Library-Morse item inside the File > Sketchbook > Examples menu containing your example. You might want to add some comments that better explain how to use your library.
